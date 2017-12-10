@@ -1,0 +1,35 @@
+---
+- name: install vim
+  apt:
+    update_cache: yes
+    name: vim
+  become: true
+
+- name: Clone vim config
+  git:  
+     repo: 'https://github.com/adelplace/vim-config.git'
+     dest: ~/.vim-config
+     force: yes
+
+- name: Install vundle
+  git:  
+     repo: 'https://github.com/VundleVim/Vundle.vim.git'
+     dest: ~/.vim/bundle/Vundle.vim
+
+- name: Remove initial vim folder
+  file:
+    path: '~/.vim'
+    state: absent
+
+- name: Setup vim config
+  file:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    state: link
+    force: yes
+  with_items:
+    - { src: '~/.vim-config/vimrc', dest: '~/.vimrc' }
+    - { src: '~/.vim-config/vim', dest: '~/.vim' }
+
+- name: Change default git editor
+  shell: git config --global core.editor vim

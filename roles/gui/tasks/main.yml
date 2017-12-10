@@ -1,0 +1,10 @@
+---
+- name: Install chrome
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+     - guake
+  become: true
+
+- include: chrome.yml
